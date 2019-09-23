@@ -1,0 +1,5 @@
+"STARTUP.obj",
+"main.obj",
+"nrf.obj" 
+TO "sendNRF24L01" 
+RAMSIZE(256) 

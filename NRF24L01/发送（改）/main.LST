@@ -1,0 +1,86 @@
+C51 COMPILER V9.02   MAIN                                                                  08/06/2017 18:36:16 PAGE 1   
+
+
+C51 COMPILER V9.02, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #include"NRF24L01.H"
+   4          
+   5          uchar const TX_ADDRESS_0[5] = {0xe7,0xe7,0xe7,0xe7,0xe7};
+   6          uchar const TX_ADDRESS_1[5] = {0xc2,0xc2,0xc2,0xc2,0xc2};
+   7          uchar const TX_ADDRESS_2[5] = {0xc3,0xc2,0xc2,0xc2,0xc2};
+   8          uchar const TX_ADDRESS_3[5] = {0xc4,0xc2,0xc2,0xc2,0xc2};
+   9          uchar const TX_ADDRESS_4[5] = {0xc5,0xc2,0xc2,0xc2,0xc2};
+  10          uchar const TX_ADDRESS_5[5] = {0xc6,0xc2,0xc2,0xc2,0xc2};
+  11          
+  12          uchar rx_buf[TX_PLOAD_WIDTH];
+  13          uchar tx_buf[RX_PLOAD_WIDTH] = {31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31};
+  14          
+  15          
+  16          
+  17          void ConfigUART(unsigned int baud)
+  18          {
+  19   1              SCON = 0x50;
+  20   1              TMOD &= 0X0F;
+  21   1              TMOD |= 0x20;
+  22   1              TH1 = 256 - (11059200/12/32)/baud;
+  23   1              TL1 = TH1;
+  24   1              ET1 = 0;
+  25   1              TR1 = 1;        
+  26   1      }
+  27          void main()
+  28          {   
+  29   1              uchar i;
+  30   1              //unsigned char x[4];
+  31   1              /************************************uchar chan = 0;***********************/
+  32   1              uchar j;
+  33   1              ConfigUART(9600);
+  34   1          SendInit_NRF24L01();        
+  35   1              NRF24L01_Freq(2401);
+  36   1              SetTx_Mode();
+  37   1              while(1)
+  38   1              {                  
+  39   2                  tx_buf[1] = '7';
+  40   2                      tx_buf[2] = '.';
+  41   2                      tx_buf[3] = '7';
+  42   2                      SPI_write(WRITE_REG + STATUS, 0xff);
+  43   2                      SPI_write(FLUSH_TX, 0xff);
+  44   2      /******************************************************************(µÿ÷∑±‰ªª≥Ã–Ú)
+  45   2                      switch(chan)
+  46   2                      {
+  47   2                          case 0 : NRF24L01_Tx_ADDR(TX_ADDRESS_0); chan++; break;
+  48   2                              case 1 : NRF24L01_Tx_ADDR(TX_ADDRESS_1); chan++; break;
+  49   2                              case 2 : NRF24L01_Tx_ADDR(TX_ADDRESS_2); chan++; break;
+  50   2                              case 3 : NRF24L01_Tx_ADDR(TX_ADDRESS_3); chan++; break;
+  51   2                              case 4 : NRF24L01_Tx_ADDR(TX_ADDRESS_4); chan++; break;
+  52   2                              case 5 : NRF24L01_Tx_ADDR(TX_ADDRESS_5); chan=0; break;
+  53   2                      }
+  54   2      *********************************************************************************/              
+  55   2                      NRF24L01_TxPacket(tx_buf);              
+C51 COMPILER V9.02   MAIN                                                                  08/06/2017 18:36:16 PAGE 2   
+
+  56   2                      delayms(500);
+  57   2                      
+  58   2              }
+  59   1      }       
+*** WARNING C280 IN LINE 29 OF MAIN.C: 'i': unreferenced local variable
+*** WARNING C280 IN LINE 32 OF MAIN.C: 'j': unreferenced local variable
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    103    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     94       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)
